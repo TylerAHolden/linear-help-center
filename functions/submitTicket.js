@@ -9,6 +9,8 @@ const { sendErrorToSlack } = require('../error_log');
 const Constants = require('../constants');
 const { oxfordJoinArray } = require('../utils/oxfordJoinArray');
 
+const JSON5 = require('json5');
+
 const headers = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers':
@@ -30,7 +32,7 @@ exports.handler = async (event, context, callback) => {
     };
   }
 
-  const Config = JSON.parse(LINEAR_CONFIG);
+  const Config = JSON5.parse(LINEAR_CONFIG);
 
   if (!Config.teamId) {
     return {
