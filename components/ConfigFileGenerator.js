@@ -116,6 +116,11 @@ const CodeToCopy = styled.div`
   }
 `;
 
+const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
 const ConfigFileGenerator = () => {
   const [apiToken, setApiToken] = useState('');
   const [error, setError] = useState('');
@@ -140,8 +145,12 @@ const ConfigFileGenerator = () => {
     setDefaultAssignee();
   };
 
-  const copyConfigToClipboard = () => {
+  const copyConfigFileToClipboard = () => {
     navigator.clipboard.writeText(finalConfigEnvString);
+  };
+
+  const copyConfigValueToClipboard = () => {
+    navigator.clipboard.writeText(JSON.stringify(config));
   };
 
   const getLinearConfig = async () => {
@@ -210,17 +219,14 @@ const ConfigFileGenerator = () => {
         defaultAssignee: defaultAssignee.id,
         inboxStateId: inbox.id,
         labels,
+        apiToken,
       };
       setConfig(newConfigObject);
     }
   }, [step, defaultAssignee]);
 
   useEffect(() => {
-    setFinalConfigEnvString(
-      `LINEAR_API_TOKEN="${apiToken}"\nLINEAR_CONFIG='${JSON.stringify(
-        config
-      )}'`
-    );
+    setFinalConfigEnvString(`LINEAR_CONFIG=${JSON.stringify(config)}`);
   }, [config]);
 
   switch (step) {
@@ -319,7 +325,14 @@ const ConfigFileGenerator = () => {
             <OutputTitle>.env</OutputTitle>
             <CodeToCopy>{finalConfigEnvString}</CodeToCopy>
           </OutputContainer>
-          <Button onClick={copyConfigToClipboard}>Copy To Clipboard</Button>
+          <ButtonContainer>
+            <Button onClick={copyConfigValueToClipboard}>
+              Copy Config Value To Clipboard
+            </Button>
+            <Button onClick={copyConfigFileToClipboard}>
+              Copy Entire File To Clipboard
+            </Button>
+          </ButtonContainer>
         </Container>
       );
       break;

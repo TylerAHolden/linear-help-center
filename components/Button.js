@@ -25,6 +25,7 @@ export const Button = styled.button`
   box-shadow: rgba(0, 0, 0, 0.25) 0px 1px 2px;
   background: rgb(110, 121, 214);
   color: rgb(255, 255, 255);
+  cursor: pointer;
   &:focus {
     outline: none;
   }

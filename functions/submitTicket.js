@@ -1,6 +1,6 @@
 require('dotenv').config();
 
-const { LINEAR_API_TOKEN, LINEAR_CONFIG } = process.env;
+const { LINEAR_CONFIG } = process.env;
 
 const axios = require('axios');
 
@@ -154,7 +154,7 @@ exports.handler = async (event, context, callback) => {
         body?.description,
         body?.ticketLabels
       ),
-      headers: { Authorization: LINEAR_API_TOKEN },
+      headers: { Authorization: Config.apiToken },
     });
 
     const response = createTicketRequest.data.data?.issueCreate;
@@ -187,7 +187,7 @@ exports.handler = async (event, context, callback) => {
         body?.device_info,
         body?.user_info
       ),
-      headers: { Authorization: LINEAR_API_TOKEN },
+      headers: { Authorization: Config.apiToken },
     });
 
     const success = addCommentToTicketRequest.data.data?.commentCreate?.success;
