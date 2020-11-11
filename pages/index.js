@@ -1,6 +1,6 @@
+import ConfigFileGenerator from '../components/ConfigFileGenerator';
 import Head from 'next/head';
 import styled from 'styled-components';
-import ConfigFileGenerator from '../components/ConfigFileGenerator';
 
 const Header = styled.h1`
   margin: 0;

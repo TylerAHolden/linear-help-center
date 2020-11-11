@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
+
+import { Button } from './Button';
+import ChevronBack from '../assets/svg/ChevronBack.svg';
+import Input from './Input';
 import { linearConfigQuery } from '../utils/linearConfigQuery';
 import { oxfordJoinArray } from '../utils/oxfordJoinArray';
-import { Button } from './Button';
-import Input from './Input';
-import ChevronBack from '../assets/svg/ChevronBack.svg';
+import styled from 'styled-components';
 
 const ErrorMessage = styled.p`
   width: 100%100%;
@@ -116,11 +117,6 @@ const CodeToCopy = styled.div`
   }
 `;
 
-const ButtonContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-`;
-
 const ConfigFileGenerator = () => {
   const [apiToken, setApiToken] = useState('');
   const [error, setError] = useState('');
@@ -145,12 +141,8 @@ const ConfigFileGenerator = () => {
     setDefaultAssignee();
   };
 
-  const copyConfigFileToClipboard = () => {
+  const copyConfigToClipboard = () => {
     navigator.clipboard.writeText(finalConfigEnvString);
-  };
-
-  const copyConfigValueToClipboard = () => {
-    navigator.clipboard.writeText(JSON.stringify(config));
   };
 
   const getLinearConfig = async () => {
@@ -219,14 +211,17 @@ const ConfigFileGenerator = () => {
         defaultAssignee: defaultAssignee.id,
         inboxStateId: inbox.id,
         labels,
-        apiToken,
       };
       setConfig(newConfigObject);
     }
   }, [step, defaultAssignee]);
 
   useEffect(() => {
-    setFinalConfigEnvString(`LINEAR_CONFIG=${JSON.stringify(config)}`);
+    setFinalConfigEnvString(
+      `LINEAR_API_TOKEN="${apiToken}"\nLINEAR_CONFIG='${JSON.stringify(
+        config
+      )}'`
+    );
   }, [config]);
 
   switch (step) {
@@ -325,14 +320,7 @@ const ConfigFileGenerator = () => {
             <OutputTitle>.env</OutputTitle>
             <CodeToCopy>{finalConfigEnvString}</CodeToCopy>
           </OutputContainer>
-          <ButtonContainer>
-            <Button onClick={copyConfigValueToClipboard}>
-              Copy Config Value To Clipboard
-            </Button>
-            <Button onClick={copyConfigFileToClipboard}>
-              Copy Entire File To Clipboard
-            </Button>
-          </ButtonContainer>
+          <Button onClick={copyConfigToClipboard}>Copy To Clipboard</Button>
         </Container>
       );
       break;

@@ -1,6 +1,6 @@
 require('dotenv').config();
 
-const { LINEAR_CONFIG } = process.env;
+const { LINEAR_API_TOKEN, LINEAR_CONFIG } = process.env;
 
 const axios = require('axios');
 
@@ -8,8 +8,6 @@ const { sendErrorToSlack } = require('../error_log');
 
 const Constants = require('../constants');
 const { oxfordJoinArray } = require('../utils/oxfordJoinArray');
-
-const JSON5 = require('json5');
 
 const headers = {
   'Access-Control-Allow-Origin': '*',
@@ -20,33 +18,33 @@ const headers = {
 };
 
 exports.handler = async (event, context, callback) => {
-  if (!LINEAR_CONFIG) {
-    return {
-      headers: headers,
-      statusCode: 200,
-      body: JSON.stringify({
-        success: false,
-        msg:
-          'No config variable found. Check your deployment page to help generate this variable then add it to your deploy secrets.',
-      }),
-    };
-  }
-
-  const Config = JSON5.parse(LINEAR_CONFIG);
-
-  if (!Config.teamId) {
-    return {
-      headers: headers,
-      statusCode: 200,
-      body: JSON.stringify({
-        success: false,
-        msg:
-          'No teamId in the config variable found. Check your deployment page to help generate this variable then add it to your deploy secrets.',
-      }),
-    };
-  }
-
   try {
+    if (!LINEAR_CONFIG) {
+      return {
+        headers: headers,
+        statusCode: 200,
+        body: JSON.stringify({
+          success: false,
+          msg:
+            'No config variable found. Check your deployment page to help generate this variable then add it to your deploy secrets.',
+        }),
+      };
+    }
+
+    const Config = JSON.parse(LINEAR_CONFIG);
+
+    if (!Config.teamId) {
+      return {
+        headers: headers,
+        statusCode: 200,
+        body: JSON.stringify({
+          success: false,
+          msg:
+            'No teamId in the config variable found. Check your deployment page to help generate this variable then add it to your deploy secrets.',
+        }),
+      };
+    }
+
     const body = JSON.parse(event.body);
 
     // take the incoming label type string and relate it to a linear label ID
@@ -154,7 +152,7 @@ exports.handler = async (event, context, callback) => {
         body?.description,
         body?.ticketLabels
       ),
-      headers: { Authorization: Config.apiToken },
+      headers: { Authorization: LINEAR_API_TOKEN },
     });
 
     const response = createTicketRequest.data.data?.issueCreate;
@@ -187,7 +185,7 @@ exports.handler = async (event, context, callback) => {
         body?.device_info,
         body?.user_info
       ),
-      headers: { Authorization: Config.apiToken },
+      headers: { Authorization: LINEAR_API_TOKEN },
     });
 
     const success = addCommentToTicketRequest.data.data?.commentCreate?.success;
